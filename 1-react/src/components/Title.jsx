@@ -1,9 +1,5 @@
 function Title({ children }) {
-  return (
-    <header>
-      <h1>{children}</h1>
-    </header>
-  );
+  return <h1>{children}</h1>;
 }
 
 export default Title;
