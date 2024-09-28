@@ -1,5 +1,12 @@
-import ProductPage from "./components/pages/ProductPage";
+// import ProductPage from "./components/pages/ProductPage";
 
-const App = () => <ProductPage />;
+import OrderPage from "./components/pages/OrderPage";
+
+const App = () => (
+  <>
+    {/* <ProductPage /> */}
+    <OrderPage />
+  </>
+);
 
 export default App;
