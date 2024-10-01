@@ -4,6 +4,7 @@ import Navbar from "../../Navbar";
 import Page from "../../Page";
 import ProductItem from "../../ProductItem";
 import Title from "../../Title";
+import OrderableProductItem from "./OrderableProductItem";
 
 class ProductPage extends React.Component {
   constructor(props) {
@@ -30,7 +31,9 @@ class ProductPage extends React.Component {
         <Page header={<Title>메뉴</Title>} footer={<Navbar />}>
           <ul>
             {this.state.productList.map((product) => (
-              <ProductItem key={product.id} product={product} />
+              <li key={product.id}>
+                <OrderableProductItem product={product} />
+              </li>
             ))}
           </ul>
         </Page>
