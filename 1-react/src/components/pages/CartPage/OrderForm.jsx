@@ -1,7 +1,7 @@
 import FormControl from "../../FormControl";
 import { useRef } from "react";
 
-const OrderForm = () => {
+const OrderForm = ({ onSubmit }) => {
   const formRef = useRef(null);
   const getInputValuesByName = (name) => {
     if (!formRef.current) return;
@@ -13,6 +13,19 @@ const OrderForm = () => {
 
     const form = formRef.current;
     //form.elements.namedItem("deliveryAddress").value
+    const deliveryAddress = getInputValuesByName("deliveryAddress");
+    const deliveryContact = getInputValuesByName("deliveryContact");
+    const paymentMethod = getInputValuesByName("paymentMethod");
+    const messageToShop = getInputValuesByName("messageToShop");
+    const messageToRider = getInputValuesByName("messageToRider");
+
+    onSubmit({
+      deliveryAddress,
+      deliveryContact,
+      paymentMethod,
+      messageToShop,
+      messageToRider,
+    });
   };
   return (
     <form

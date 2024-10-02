@@ -1,9 +1,10 @@
-import Button from "../../Button";
+import React from "react";
 import Page from "../../Page";
 import Title from "../../Title";
 import ProductItem from "../../ProductItem";
-import FormControl from "../../FormControl";
 import OrderForm from "./OrderForm";
+import PaymentButton from "./PaymentButton";
+import ProductApi from "shared/api/ProductApi";
 
 const fakeProduct = {
   id: "CACDA421",
@@ -12,22 +13,43 @@ const fakeProduct = {
   thumbnail: "./images/menu-해물계란라면.jpg",
 };
 
-const CartPage = () => {
-  return (
-    <div className="CartPage">
-      <Page
-        header={<Title backUrl="/">장바구니</Title>}
-        footer={
-          <Button styleType="brand-solid" block form="order-form">
-            결제하기
-          </Button>
-        }
-      >
-        <ProductItem product={fakeProduct} />
-        <OrderForm />
-      </Page>
-    </div>
-  );
-};
+class CartPage extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { product: null };
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  async fetch() {
+    try {
+      const product = await ProductApi.fetchProduct("CACDA421");
+      this.setState({ product });
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  handleSubmit(values) {
+    console.log(values);
+  }
+
+  componentDidMount() {
+    this.fetch();
+  }
+  render() {
+    const { product } = this.state;
+    return (
+      <div className="CartPage">
+        <Page
+          header={<Title backUrl="/">장바구니</Title>}
+          footer={<PaymentButton />}
+        >
+          {product && <ProductItem product={product} />}
+          <OrderForm onSubmit={this.handleSubmit} />
+        </Page>
+      </div>
+    );
+  }
+}
 
 export default CartPage;
