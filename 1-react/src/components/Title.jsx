@@ -1,8 +1,10 @@
+import * as MyRouter from "../lib/MyRouter";
+
 function Title({ children, backUrl }) {
   if (backUrl) {
     return (
       <>
-        <a href={backUrl}></a>
+        <MyRouter.Link to={backUrl} />
         <h1 style={{ paddingRight: 44 }}>{children}</h1>
       </>
     );

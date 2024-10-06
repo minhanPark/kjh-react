@@ -1,18 +1,21 @@
 import React from "react";
-// import ProductPage from "./components/pages/ProductPage";
-//import OrderPage from "./components/pages/OrderPage";
+import ProductPage from "./components/pages/ProductPage";
+import OrderPage from "./components/pages/OrderPage";
 // import createEventEmitter from "shared/lib/EventEmitter";
 import CartPage from "./components/pages/CartPage";
+import * as MyRouter from "./lib/MyRouter";
 
 const App = () => (
-  <>
-    {/* <ProductPage /> */}
-    {/* <OrderPage /> */}
-    <CartPage />
-  </>
+  <MyRouter.Router>
+    <MyRouter.Routes>
+      <MyRouter.Route path="/order" element={<OrderPage />} />
+      <MyRouter.Route path="/cart" element={<CartPage />} />
+      <MyRouter.Route path="/" element={<ProductPage />} />
+    </MyRouter.Routes>
+  </MyRouter.Router>
 );
 
-//export default App;
+export default App;
 
 // 이벤트 에미터 예시
 // const eventEmitter = createEventEmitter(0);
@@ -24,59 +27,59 @@ const App = () => (
 // eventEmitter.set(2); // 2
 
 // setTimeout(() => eventEmitter.set(10), 3000);
-import MyReact from "./lib/MyReact";
+// import MyReact from "./lib/MyReact";
 
-const countContext = MyReact.createContext({
-  count: 0,
-  setCount: () => {},
-});
+// const countContext = MyReact.createContext({
+//   count: 0,
+//   setCount: () => {},
+// });
 
-class CountProvider extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      count: 0,
-    };
-  }
+// class CountProvider extends React.Component {
+//   constructor(props) {
+//     super(props);
+//     this.state = {
+//       count: 0,
+//     };
+//   }
 
-  render() {
-    const value = {
-      count: this.state.count,
-      setCount: (nextValue) => this.setState({ count: nextValue }),
-    };
+//   render() {
+//     const value = {
+//       count: this.state.count,
+//       setCount: (nextValue) => this.setState({ count: nextValue }),
+//     };
 
-    return (
-      <countContext.Provider value={value}>
-        {this.props.children}
-      </countContext.Provider>
-    );
-  }
-}
+//     return (
+//       <countContext.Provider value={value}>
+//         {this.props.children}
+//       </countContext.Provider>
+//     );
+//   }
+// }
 
-const Count = () => {
-  return (
-    <countContext.Consumer>
-      {(value) => <div>{value.count}</div>}
-    </countContext.Consumer>
-  );
-};
+// const Count = () => {
+//   return (
+//     <countContext.Consumer>
+//       {(value) => <div>{value.count}</div>}
+//     </countContext.Consumer>
+//   );
+// };
 
-const PlusButton = () => {
-  return (
-    <countContext.Consumer>
-      {(value) => (
-        <button onClick={() => value.setCount(value.count + 1)}>
-          {" "}
-          + 카운트 올리기
-        </button>
-      )}
-    </countContext.Consumer>
-  );
-};
+// const PlusButton = () => {
+//   return (
+//     <countContext.Consumer>
+//       {(value) => (
+//         <button onClick={() => value.setCount(value.count + 1)}>
+//           {" "}
+//           + 카운트 올리기
+//         </button>
+//       )}
+//     </countContext.Consumer>
+//   );
+// };
 
-export default () => (
-  <CountProvider>
-    <Count />
-    <PlusButton />
-  </CountProvider>
-);
+// export default () => (
+//   <CountProvider>
+//     <Count />
+//     <PlusButton />
+//   </CountProvider>
+// );
