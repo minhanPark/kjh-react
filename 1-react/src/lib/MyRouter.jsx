@@ -1,7 +1,4 @@
 import React from "react";
-import CartPage from "../components/pages/CartPage";
-import OrderPage from "../components/pages/OrderPage";
-import ProductPage from "../components/pages/ProductPage";
 
 export const routerContext = React.createContext({});
 routerContext.displayName = "RouterContext";
@@ -25,10 +22,27 @@ export class Router extends React.Component {
       path: window.location.pathname,
     };
     this.handleChangePath = this.handleChangePath.bind(this);
+    this.handleOnPopState = this.handleOnPopState.bind(this);
   }
 
   handleChangePath(path) {
     this.setState({ path });
+    window.history.pushState({ path }, "", path);
+  }
+
+  handleOnPopState(event) {
+    const nextPath = event.state && event.state.path;
+    if (!nextPath) return;
+    this.setState({ path: nextPath });
+  }
+
+  componentDidMount() {
+    window.addEventListener("popstate", this.handleOnPopState);
+    window.history.replaceState({ path: this.state.path }, "");
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("popstate", this.handleOnPopState);
   }
 
   render() {
@@ -58,10 +72,8 @@ export const Routes = ({ children }) => (
         if (!child.props.path || !child.props.element) return;
         // 요청 경로를 검사
         if (child.props.path !== path.replace(/\?.*$/, "")) return;
-
         selectedElement = child.props.element;
       });
-      console.log(selectedElement);
       return selectedElement;
     }}
   </routerContext.Consumer>
