@@ -5,6 +5,7 @@ import ProductItem from "../../ProductItem";
 import OrderForm from "./OrderForm";
 import PaymentButton from "./PaymentButton";
 import ProductApi from "shared/api/ProductApi";
+import * as MyRouter from "../../../lib/MyRouter";
 
 const fakeProduct = {
   id: "CACDA421",
@@ -21,8 +22,9 @@ class CartPage extends React.Component {
   }
 
   async fetch() {
+    const { productId } = this.props.params();
     try {
-      const product = await ProductApi.fetchProduct("CACDA421");
+      const product = await ProductApi.fetchProduct(productId);
       this.setState({ product });
     } catch (e) {
       console.error(e);
@@ -30,7 +32,9 @@ class CartPage extends React.Component {
   }
 
   handleSubmit(values) {
+    // TODO 결제하기
     console.log(values);
+    this.props.navigate("/order");
   }
 
   componentDidMount() {
@@ -52,4 +56,4 @@ class CartPage extends React.Component {
   }
 }
 
-export default CartPage;
+export default MyRouter.withRouter(CartPage);
