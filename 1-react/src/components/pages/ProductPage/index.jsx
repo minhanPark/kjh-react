@@ -5,6 +5,8 @@ import Page from "../../Page";
 import ProductItem from "../../ProductItem";
 import Title from "../../Title";
 import OrderableProductItem from "./OrderableProductItem";
+import * as MyLayout from "../../../lib/MyLayout";
+import Dialog from "../../Dialog";
 
 class ProductPage extends React.Component {
   constructor(props) {
@@ -14,9 +16,12 @@ class ProductPage extends React.Component {
     };
   }
   async fetch() {
+    const { startLoading, finishLoading } = this.props;
+    startLoading("메뉴목록 로딩중...");
     try {
       const productList = await ProductApi.fetchProductList();
       this.setState({ productList });
+      finishLoading();
     } catch (e) {
       console.error(e);
     }
@@ -42,4 +47,4 @@ class ProductPage extends React.Component {
   }
 }
 
-export default ProductPage;
+export default MyLayout.withLayout(ProductPage);

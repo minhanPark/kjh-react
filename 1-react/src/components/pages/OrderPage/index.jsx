@@ -6,6 +6,7 @@ import OrderDeliveryCard from "./OrderDeliveryCard";
 import OrderPaymentCard from "./OrderPaymentCard";
 import OrderStatusCard from "./OrderStatusCard";
 import OrderApi from "shared/api/OrderApi";
+import * as MyLayout from "../../../lib/MyLayout";
 
 const fakeOrder = {
   id: "CACDA420",
@@ -33,9 +34,12 @@ class OrderPage extends React.Component {
   }
 
   async fetch() {
+    const { startLoading, finishLoading } = this.props;
+    startLoading("주문내역 로딩중...");
     try {
       const order = await OrderApi.fetchMyOrder();
       this.setState({ order });
+      //finishLoading();
     } catch (e) {
       console.error(e);
     }
@@ -63,4 +67,4 @@ class OrderPage extends React.Component {
   }
 }
 
-export default OrderPage;
+export default MyLayout.withLayout(OrderPage);
