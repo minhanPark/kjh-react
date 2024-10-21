@@ -1,46 +1,32 @@
-//import React from "react";
+import React from "react";
 import MyReact from "../lib/MyReact";
 
-function NameField() {
-  const [firstName, setFirstName] = MyReact.useState("사용자1");
-  const [lastName, setLastName] = MyReact.useState("박");
+const Counter = () => {
+  MyReact.resetCursor();
+  const [count, setCount] = React.useState(0);
+  const [name, setName] = React.useState(localStorage.getItem("name") || "");
 
-  const handleChangeFirstName = (e) => {
-    setFirstName(e.target.value);
-  };
-  const handleChangeLastName = (e) => {
-    setLastName(e.target.value);
-  };
+  const handleClick = () => setCount(count + 1);
+
+  const handleChangeName = (e) => setName(e.target.value);
+
+  MyReact.useEffect(() => {
+    document.title = `count: ${count} ${name}`;
+    console.log("effect1");
+  }, [count, name]);
+
+  MyReact.useEffect(() => {
+    localStorage.setItem("name", name);
+    console.log("effect2");
+  }, [name]);
+
+  console.log("Counter rendered");
   return (
     <>
-      <input type="text" value={firstName} onChange={handleChangeFirstName} />
-      <input type="text" value={lastName} onChange={handleChangeLastName} />
+      <button onClick={handleClick}>더하기</button>
+      <input value={name} onChange={handleChangeName} />
     </>
   );
-}
-// class App extends React.Component {
-//   constructor(props) {
-//     super(props);
-//     this.state = { name: "사용자1" };
-//   }
+};
 
-//   handleChange(e) {
-//     this.setState({ name: e.target.value });
-//   }
-
-//   render() {
-//     return (
-//       <>
-//         <select value={this.state.name} onChange={this.handleChange.bind(this)}>
-//           <option value="사용자1">사용자1</option>
-//           <option value="사용자2">사용자2</option>
-//         </select>
-//         <Contract name={this.state.name} />
-//       </>
-//     );
-//   }
-// }
-
-// export default App;
-
-export default () => <NameField />;
+export default () => <Counter />;
