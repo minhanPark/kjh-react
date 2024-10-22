@@ -1,57 +1,29 @@
 import React from "react";
 import MyReact from "../lib/MyReact";
 
-const Counter = () => {
-  MyReact.resetCursor();
+const countContext = MyReact.createContext({});
+
+const CountProvider = ({ children }) => {
   const [count, setCount] = React.useState(0);
-  const [name, setName] = React.useState("");
-
-  const handleClick = () => setCount(count + 1);
-
-  const handleChangeName = (e) => setName(e.target.value);
-
-  MyReact.useEffect(() => {
-    document.title = `count: ${count} ${name}`;
-    console.log("effect1");
-
-    return function cleanup() {
-      document.title = "";
-      console.log("effect1 cleanup");
-    };
-  }, [count, name]);
-
-  MyReact.useEffect(() => {
-    localStorage.setItem("name", name);
-    console.log("effect2");
-  }, [name]);
-
-  MyReact.useEffect(() => {
-    setName(localStorage.getItem("name") || "");
-    console.log("effect3");
-  }, []);
-
-  console.log("Counter rendered");
+  const value = { count, setCount };
   return (
-    <>
-      <button onClick={handleClick}>더하기</button>
-      <input value={name} onChange={handleChangeName} />
-    </>
+    <countContext.Provider value={value}>{children}</countContext.Provider>
   );
 };
 
-export default () => {
-  const [mounted, setMounted] = React.useState(false);
-
-  const handleToggle = () => {
-    const nextMounted = !mounted;
-    if (!nextMounted) MyReact.cleanupEffect();
-    setMounted(nextMounted);
-  };
-
-  return (
-    <>
-      <button onClick={handleToggle}>컴포넌트 토글</button>
-      {mounted && <Counter />}
-    </>
-  );
+const Count = () => {
+  const { count } = MyReact.useContext(countContext);
+  return <div>{count}</div>;
 };
+
+const PlusOne = () => {
+  const { count, setCount } = MyReact.useContext(countContext);
+  return <button onClick={() => setCount(count + 1)}>+1</button>;
+};
+
+export default () => (
+  <CountProvider>
+    <Count />
+    <PlusOne />
+  </CountProvider>
+);
