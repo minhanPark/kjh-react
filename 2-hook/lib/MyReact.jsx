@@ -4,6 +4,7 @@ const MyReact = (function MyReact() {
   const memorizedStates = [];
   let deps = [];
   const isInitialized = [];
+  const cleanups = [];
   let cursor = 0;
 
   function useState(initialValue = "") {
@@ -40,8 +41,13 @@ const MyReact = (function MyReact() {
 
   function useEffect(effect, nextDeps) {
     function runDedeferedEffect() {
+      function runEffect() {
+        const cleanup = effect();
+        if (cleanup) cleanups[cursor] = cleanup;
+      }
+
       const ENOUGH_TIME_TO_RENDER = 1;
-      setTimeout(effect, ENOUGH_TIME_TO_RENDER);
+      setTimeout(runEffect, ENOUGH_TIME_TO_RENDER);
     }
 
     if (!isInitialized[cursor]) {
@@ -68,7 +74,11 @@ const MyReact = (function MyReact() {
     cursor = 0;
   }
 
-  return { useState, useEffect, resetCursor };
+  function cleanupEffect() {
+    cleanups.forEach((cleanup) => typeof cleanup === "function" && cleanup());
+  }
+
+  return { useState, useEffect, resetCursor, cleanupEffect };
 })();
 
 export default MyReact;
