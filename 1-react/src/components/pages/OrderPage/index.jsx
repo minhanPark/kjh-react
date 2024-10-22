@@ -26,47 +26,35 @@ const fakeOrder = {
   position: [60, 60],
 };
 
-class OrderPage extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      order: null,
-    };
-  }
-
-  async fetch() {
-    const { startLoading, finishLoading, openDialog } = this.props;
-    startLoading("주문내역 로딩중...");
+const OrderPage = () => {
+  const [order, setOrder] = React.useState();
+  const fetch = async () => {
     try {
       const order = await OrderApi.fetchMyOrder();
-      this.setState({ order });
+      setOrder(order);
     } catch (e) {
       console.error(e);
-      openDialog(<ErrorDialog />);
+      //openDialog(<ErrorDialog />);
     }
-    finishLoading();
-  }
+    //finishLoading();
+  };
 
-  componentDidMount() {
-    this.fetch();
-  }
+  React.useEffect(() => {
+    fetch();
+  }, []);
+  return (
+    <div className="OrderPage">
+      <Page header={<Title>주문내역</Title>} footer={<Navbar />}>
+        {order && (
+          <>
+            <OrderStatusCard order={order} />
+            <OrderPaymentCard order={order} />
+            <OrderDeliveryCard order={order} />
+          </>
+        )}
+      </Page>
+    </div>
+  );
+};
 
-  render() {
-    const { order } = this.state;
-    return (
-      <div className="OrderPage">
-        <Page header={<Title>주문내역</Title>} footer={<Navbar />}>
-          {order && (
-            <>
-              <OrderStatusCard order={order} />
-              <OrderPaymentCard order={order} />
-              <OrderDeliveryCard order={order} />
-            </>
-          )}
-        </Page>
-      </div>
-    );
-  }
-}
-
-export default MyLayout.withLayout(OrderPage);
+export default OrderPage;

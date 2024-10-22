@@ -11,62 +11,52 @@ import ErrorDialog from "../../ErrorDialog";
 import OrderApi from "shared/api/OrderApi";
 import PaymentSuccessDialog from "./PaymentSuccessDialog";
 
-class CartPage extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { product: null };
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
+const CartPage = () => {
+  const [product, setProduct] = React.useState();
 
-  async fetch() {
-    const { params, startLoading, finishLoading, openDialog } = this.props;
-    const { productId } = params();
-    if (!productId) return;
-
-    startLoading("장바구니에 담는 중...");
-    try {
-      const product = await ProductApi.fetchProduct(productId);
-      this.setState({ product });
-    } catch (e) {
-      console.error(e);
-      openDialog(<ErrorDialog />);
-      return;
-    }
-    finishLoading();
-  }
-
-  async handleSubmit(values) {
-    const { startLoading, finishLoading, openDialog } = this.props;
-    startLoading("결제 중...");
+  const handleSubmit = async (values) => {
+    //const { startLoading, finishLoading, openDialog } = this.props;
+    //startLoading("결제 중...");
     try {
       await OrderApi.createOrder(values);
     } catch (e) {
       console.error(e);
-      openDialog(<ErrorDialog />);
+      //openDialog(<ErrorDialog />);
       return;
     }
-    finishLoading();
-    openDialog(<PaymentSuccessDialog />);
+    //finishLoading();
+    //openDialog(<PaymentSuccessDialog />);
     //this.props.navigate("/order");
-  }
+  };
 
-  componentDidMount() {
-    this.fetch();
-  }
-  render() {
-    const { product } = this.state;
-    return (
-      <div className="CartPage">
-        <Page
-          header={<Title backUrl="/">장바구니</Title>}
-          footer={<PaymentButton />}
-        >
-          {product && <ProductItem product={product} />}
-          <OrderForm onSubmit={this.handleSubmit} />
-        </Page>
-      </div>
-    );
-  }
-}
+  const fetch = async (productId) => {
+    if (!productId) return;
 
-export default MyLayout.withLayout(MyRouter.withRouter(CartPage));
+    try {
+      const product = await ProductApi.fetchProduct(productId);
+      setProduct(product);
+    } catch (e) {
+      console.error(e);
+
+      return;
+    }
+  };
+
+  React.useEffect(() => {
+    fetch("CACDA422");
+  }, []);
+
+  return (
+    <div className="CartPage">
+      <Page
+        header={<Title backUrl="/">장바구니</Title>}
+        footer={<PaymentButton />}
+      >
+        {product && <ProductItem product={product} />}
+        <OrderForm onSubmit={handleSubmit} />
+      </Page>
+    </div>
+  );
+};
+
+export default CartPage;

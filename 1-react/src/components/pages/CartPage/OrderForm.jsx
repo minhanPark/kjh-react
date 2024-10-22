@@ -11,7 +11,7 @@ const OrderForm = ({ onSubmit }) => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const form = formRef.current;
+    //const form = formRef.current;
     //form.elements.namedItem("deliveryAddress").value
     const deliveryAddress = getInputValuesByName("deliveryAddress");
     const deliveryContact = getInputValuesByName("deliveryContact");
