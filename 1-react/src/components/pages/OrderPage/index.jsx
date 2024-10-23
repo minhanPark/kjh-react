@@ -28,15 +28,18 @@ const fakeOrder = {
 
 const OrderPage = () => {
   const [order, setOrder] = React.useState();
+  const { startLoading, finishLoading, openDialog } = MyLayout.useDialog();
   const fetch = async () => {
+    startLoading("주문 정보 로딩중...");
     try {
       const order = await OrderApi.fetchMyOrder();
       setOrder(order);
     } catch (e) {
       console.error(e);
-      //openDialog(<ErrorDialog />);
+      finishLoading();
+      openDialog(<ErrorDialog />);
     }
-    //finishLoading();
+    finishLoading();
   };
 
   React.useEffect(() => {

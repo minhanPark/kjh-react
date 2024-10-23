@@ -13,38 +13,43 @@ import PaymentSuccessDialog from "./PaymentSuccessDialog";
 
 const CartPage = () => {
   const [product, setProduct] = React.useState();
+  const { productId } = MyRouter.useParams();
+  const navigate = MyRouter.useNavigate();
+  const { startLoading, finishLoading, openDialog } = MyLayout.useDialog();
 
   const handleSubmit = async (values) => {
-    //const { startLoading, finishLoading, openDialog } = this.props;
-    //startLoading("결제 중...");
+    startLoading("결제 중...");
     try {
       await OrderApi.createOrder(values);
     } catch (e) {
       console.error(e);
-      //openDialog(<ErrorDialog />);
+      finishLoading();
+      openDialog(<ErrorDialog />);
       return;
     }
-    //finishLoading();
-    //openDialog(<PaymentSuccessDialog />);
-    //this.props.navigate("/order");
+    finishLoading();
+    openDialog(<PaymentSuccessDialog />);
+    navigate("/order");
   };
 
   const fetch = async (productId) => {
     if (!productId) return;
-
+    startLoading("장바구니에 담는중....");
     try {
       const product = await ProductApi.fetchProduct(productId);
       setProduct(product);
     } catch (e) {
       console.error(e);
-
+      finishLoading();
+      openDialog(<ErrorDialog />);
       return;
     }
+    finishLoading();
   };
 
   React.useEffect(() => {
-    fetch("CACDA422");
-  }, []);
+    if (productId) fetch(productId);
+  }, [productId]);
 
   return (
     <div className="CartPage">

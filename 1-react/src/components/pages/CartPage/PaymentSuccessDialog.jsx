@@ -3,7 +3,9 @@ import * as MyLayout from "../../../lib/MyLayout";
 import Button from "../../Button";
 import Dialog from "../../Dialog";
 
-const PaymentSuccessDialog = ({ navigate, closeDialog }) => {
+const PaymentSuccessDialog = () => {
+  const navigate = MyRouter.useNavigate();
+  const { closeDialog } = MyLayout.useDialog();
   const handleClickYes = () => {
     closeDialog();
     navigate("/order");
@@ -31,4 +33,4 @@ const PaymentSuccessDialog = ({ navigate, closeDialog }) => {
   );
 };
 
-export default MyLayout.withLayout(MyRouter.withRouter(PaymentSuccessDialog));
+export default PaymentSuccessDialog;

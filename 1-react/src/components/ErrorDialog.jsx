@@ -2,7 +2,8 @@ import * as MyLayout from "../lib/MyLayout";
 import Button from "./Button";
 import Dialog from "./Dialog";
 
-const ErrorDialog = ({ closeDialog }) => {
+const ErrorDialog = () => {
+  const { closeDialog } = MyLayout.useDialog();
   return (
     <Dialog
       header={<>오류</>}
@@ -13,4 +14,4 @@ const ErrorDialog = ({ closeDialog }) => {
   );
 };
 
-export default MyLayout.withLayout(ErrorDialog);
+export default ErrorDialog;

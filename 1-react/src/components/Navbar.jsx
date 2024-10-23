@@ -1,6 +1,7 @@
 import * as MyRouter from "../lib/MyRouter";
 
-const Navbar = ({ match }) => {
+const Navbar = () => {
+  const match = MyRouter.useMatch();
   return (
     <nav className="Navbar">
       <MyRouter.Link to="/" className={match("/") ? "active" : ""}>
@@ -13,4 +14,4 @@ const Navbar = ({ match }) => {
   );
 };
 
-export default MyRouter.withRouter(Navbar);
+export default Navbar;

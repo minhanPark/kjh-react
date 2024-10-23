@@ -90,5 +90,5 @@ export const useParams = () => {
     }
     return paramsObject;
   };
-  return params;
+  return params();
 };
