@@ -1,37 +1,88 @@
 import React from "react";
 import MyReact from "../lib/MyReact";
 
-const countContext = MyReact.createContext({});
+const LoginForm = () => {
+  const [values, setValues] = React.useState({ email: "", password: "" });
+  const [errors, setErrors] = React.useState({ email: "", password: "" });
+  const [touched, setTouched] = React.useState({
+    email: false,
+    password: false,
+  });
 
-const CountProvider = ({ children }) => {
-  const [count, setCount] = React.useState(0);
-  const value = { count, setCount };
+  const validate = (values) => {
+    const errors = {
+      email: "",
+      password: "",
+    };
+
+    if (!values.email) {
+      errors.email = "이메일을 입력해주세요.";
+    }
+    if (!values.password) {
+      errors.password = "비밀번호를 입력해주세요.";
+    }
+
+    return errors;
+  };
+
+  const handleChange = (event) => {
+    setValues({
+      ...values,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    const nextTouched = {
+      email: true,
+      password: true,
+    };
+
+    setTouched(nextTouched);
+
+    const errors = validate(values);
+    setErrors(errors);
+    if (Object.values(errors).some(Boolean)) return;
+
+    console.log("Submitted", values);
+  };
+
+  const handleBlur = (event) => {
+    setTouched({
+      ...touched,
+      [event.target.name]: true,
+    });
+  };
+
+  React.useEffect(() => {
+    setErrors(validate(values));
+  }, [values]);
   return (
-    <countContext.Provider value={value}>{children}</countContext.Provider>
+    <form onSubmit={handleSubmit} noValidate>
+      <input
+        type="text"
+        name="email"
+        value={values.email}
+        placeholder="email"
+        onChange={handleChange}
+        onBlur={handleBlur}
+        autoFocus
+      />
+      {touched.email && errors.email && <span>{errors.email}</span>}
+      <input
+        type="password"
+        name="password"
+        value={values.password}
+        placeholder="password"
+        onChange={handleChange}
+        onBlur={handleBlur}
+      />
+      {touched.password && errors.password && <span>{errors.password}</span>}
+      <button>로그인</button>
+    </form>
   );
 };
 
-const Count = () => {
-  const { count } = MyReact.useContext(countContext);
-  return <div>{count}</div>;
-};
-
-const PlusOne = () => {
-  const { count, setCount } = MyReact.useContext(countContext);
-  return <button onClick={() => setCount(count + 1)}>+1</button>;
-};
-
-export default () => {
-  const ref1 = MyReact.useRef(1);
-  const [count, setCount] = React.useState(0);
-
-  if (count > 2) {
-    ref1.current = ref1.current + 1;
-  }
-  return (
-    <>
-      <button onClick={() => setCount(count + 1)}>{count}</button>
-      <div className="">{ref1.current}</div>
-    </>
-  );
-};
+export default LoginForm;

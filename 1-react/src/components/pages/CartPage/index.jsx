@@ -29,7 +29,7 @@ const CartPage = () => {
     }
     finishLoading();
     openDialog(<PaymentSuccessDialog />);
-    navigate("/order");
+    //navigate("/order");
   };
 
   const fetch = async (productId) => {
