@@ -2,40 +2,79 @@ import React from "react";
 import MyReact from "../lib/MyReact";
 import { Form, ErrorMessage, Field } from "../lib/MyForm";
 
-const LoginForm = () => {
-  const validate = (values) => {
-    const errors = {
-      email: "",
-      password: "",
-    };
+const useRegisterForm = () => {
+  const [state, setState] = React.useState({
+    value: { nickname: "", passwo: "" },
+    error: { nickname: "", passwo: "" },
+  });
 
-    if (!values.email) {
-      errors.email = "이메일을 입력해주세요.";
-    }
-    if (!values.password) {
-      errors.password = "비밀번호를 입력해주세요.";
-    }
-
-    return errors;
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setState({
+      ...state,
+      value: {
+        ...state.value,
+        [name]: value,
+      },
+    });
   };
 
-  const handleSubmit = (values) => {
-    console.log("Submitted", values);
+  const handleReset = () => {
+    setState({
+      value: { nickname: "", passwo: "" },
+      error: { nickname: "", passwo: "" },
+    });
+  };
+  const handleSubmit = (e) => {
+    setState({
+      ...state,
+      error: {
+        nickname: /^\w+$/.test(state.value.nickname)
+          ? ""
+          : "영문, 숫자만 입력하세요.",
+        password: /^.{3,6}$/.test(state.value.password)
+          ? ""
+          : "3~6 자리로 입력하세요.",
+      },
+    });
   };
 
+  return {
+    state,
+    handleChange,
+    handleReset,
+    handleSubmit,
+  };
+};
+
+const RegisterForm = () => {
+  const { state, handleChange, handleReset, handleSubmit } = useRegisterForm();
   return (
-    <Form
-      initialValue={{ email: "", password: "" }}
-      validate={validate}
-      onSubmit={handleSubmit}
-    >
-      <Field name="email" placeholder="email" />
-      <ErrorMessage name="email" />
-      <Field name="password" placeholder="password" />
-      <ErrorMessage name="password" />
-      <button>로그인</button>
-    </Form>
+    <>
+      <div className="">
+        <label htmlFor="">닉네임</label>
+        <input
+          type="text"
+          name="nickname"
+          value={state.value.nickname}
+          onChange={handleChange}
+        />
+        <span>{state.error.nickname}</span>
+      </div>
+      <div className="">
+        <label htmlFor="">비밀번호</label>
+        <input
+          type="password"
+          name="password"
+          value={state.value.password}
+          onChange={handleChange}
+        />
+        <span>{state.error.password}</span>
+      </div>
+      <button onClick={handleReset}>초기화</button>
+      <button onClick={handleSubmit}>회원 가입</button>
+    </>
   );
 };
 
-export default LoginForm;
+export default RegisterForm;
