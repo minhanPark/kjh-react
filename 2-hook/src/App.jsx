@@ -2,31 +2,29 @@ import React from "react";
 import MyReact from "../lib/MyReact";
 import { Form, ErrorMessage, Field } from "../lib/MyForm";
 
-const useRegisterForm = () => {
-  const [state, setState] = React.useState({
-    value: { nickname: "", passwo: "" },
-    error: { nickname: "", passwo: "" },
-  });
+const initialValues = {
+  value: { nickname: "", password: "" },
+  error: { nickname: "", password: "" },
+};
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setState({
+const reducer = (state, action) => {
+  if (action.type === "SET_FIELD") {
+    return {
       ...state,
       value: {
         ...state.value,
-        [name]: value,
+        [action.name]: action.value,
       },
-    });
-  };
-
-  const handleReset = () => {
-    setState({
-      value: { nickname: "", passwo: "" },
-      error: { nickname: "", passwo: "" },
-    });
-  };
-  const handleSubmit = (e) => {
-    setState({
+    };
+  }
+  if (action.type === "RESET") {
+    return {
+      value: { nickname: "", password: "" },
+      error: { nickname: "", password: "" },
+    };
+  }
+  if (action.type === "VALIDATE") {
+    return {
       ...state,
       error: {
         nickname: /^\w+$/.test(state.value.nickname)
@@ -36,19 +34,24 @@ const useRegisterForm = () => {
           ? ""
           : "3~6 자리로 입력하세요.",
       },
-    });
-  };
-
-  return {
-    state,
-    handleChange,
-    handleReset,
-    handleSubmit,
-  };
+    };
+  }
+  throw Error("알 수 없는 액션");
 };
 
 const RegisterForm = () => {
-  const { state, handleChange, handleReset, handleSubmit } = useRegisterForm();
+  const [state, dispatch] = MyReact.useReducer(reducer, initialValues);
+  const handleChange = (e) => {
+    dispatch({ type: "SET_FIELD", name: e.target.name, value: e.target.value });
+  };
+
+  const handleReset = () => {
+    dispatch({ type: "RESET" });
+  };
+
+  const handleSubmit = () => {
+    dispatch({ type: "VALIDATE" });
+  };
   return (
     <>
       <div className="">
