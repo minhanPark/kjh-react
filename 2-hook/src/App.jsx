@@ -2,82 +2,42 @@ import React from "react";
 import MyReact from "../lib/MyReact";
 import { Form, ErrorMessage, Field } from "../lib/MyForm";
 
-const initialValues = {
-  value: { nickname: "", password: "" },
-  error: { nickname: "", password: "" },
-};
+const Board = ({ posts, tag }) => {
+  MyReact.resetCursor();
 
-const reducer = (state, action) => {
-  if (action.type === "SET_FIELD") {
-    return {
-      ...state,
-      value: {
-        ...state.value,
-        [action.name]: action.value,
-      },
-    };
-  }
-  if (action.type === "RESET") {
-    return {
-      value: { nickname: "", password: "" },
-      error: { nickname: "", password: "" },
-    };
-  }
-  if (action.type === "VALIDATE") {
-    return {
-      ...state,
-      error: {
-        nickname: /^\w+$/.test(state.value.nickname)
-          ? ""
-          : "영문, 숫자만 입력하세요.",
-        password: /^.{3,6}$/.test(state.value.password)
-          ? ""
-          : "3~6 자리로 입력하세요.",
-      },
-    };
-  }
-  throw Error("알 수 없는 액션");
-};
-
-const RegisterForm = () => {
-  const [state, dispatch] = MyReact.useReducer(reducer, initialValues);
-  const handleChange = (e) => {
-    dispatch({ type: "SET_FIELD", name: e.target.name, value: e.target.value });
+  const filterPosts = () => {
+    console.log("filterPosts");
+    return posts.filter((post) => (tag ? post.tag === tag : true));
   };
 
-  const handleReset = () => {
-    dispatch({ type: "RESET" });
-  };
+  const filteredPosts = MyReact.useMemo(filterPosts, [posts, tag]);
 
-  const handleSubmit = () => {
-    dispatch({ type: "VALIDATE" });
-  };
   return (
-    <>
-      <div className="">
-        <label htmlFor="">닉네임</label>
-        <input
-          type="text"
-          name="nickname"
-          value={state.value.nickname}
-          onChange={handleChange}
-        />
-        <span>{state.error.nickname}</span>
-      </div>
-      <div className="">
-        <label htmlFor="">비밀번호</label>
-        <input
-          type="password"
-          name="password"
-          value={state.value.password}
-          onChange={handleChange}
-        />
-        <span>{state.error.password}</span>
-      </div>
-      <button onClick={handleReset}>초기화</button>
-      <button onClick={handleSubmit}>회원 가입</button>
-    </>
+    <ul>
+      {filteredPosts.map(({ id, content, tag }) => (
+        <li key={id}>
+          {content} <span>#{tag}</span>
+        </li>
+      ))}
+    </ul>
   );
 };
 
-export default RegisterForm;
+export default () => {
+  const [tag, setTag] = React.useState("");
+  return (
+    <>
+      <button onClick={() => setTag("")}>All</button>
+      <button onClick={() => setTag("tag1")}>Tag1</button>
+      <button onClick={() => setTag("tag2")}>Tag2</button>
+      <Board
+        posts={[
+          { id: "id1", content: "content1", tag: "tag1" },
+          { id: "id2", content: "content2", tag: "tag1" },
+          { id: "id3", content: "content3", tag: "tag2" },
+        ]}
+        tag={tag}
+      />
+    </>
+  );
+};
